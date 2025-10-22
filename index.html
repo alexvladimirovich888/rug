@@ -1,431 +1,593 @@
-<!DOCTYPE html><html lang="en"><head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neanderthal Economy</title>
-    <link rel="icon" href="images/bone.png" type="image/png">
-    <!-- Добавляем дополнительные размеры фавикона для разных устройств -->
-    <link rel="apple-touch-icon" href="images/bone.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="images/bone.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/bone.png">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=8-bitify+Sans&display=swap" rel="stylesheet">
-    <link href="css/nes.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-  </head>
-  <body>
-    <audio id="connect-sound" src="media/misc.wav"></audio>
-    <!-- Иконка звука в левом нижнем углу -->
-    <div id="sound-icon" style="position: fixed; bottom: 30px; left: 30px; cursor: pointer">
-      <img src="images/voice.png" alt="Sound Icon" width="64" height="64">
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RugScan.AI</title>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated code rain background */
+        .code-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.1;
+        }
+
+        .rain-line {
+            position: absolute;
+            color: #00ff41;
+            font-size: 12px;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100vh); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+            width: 100%;
+            position: relative;
+        }
+
+        .logo {
+            text-align: center;
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            color: #ffffff;
+            text-shadow: 0 0 20px #ff0000;
+            border: 2px solid #333;
+            padding: 15px 30px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            display: inline-block;
+        }
+
+        .header-buttons {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-btn {
+            padding: 8px 16px;
+            background: #333;
+            border: 1px solid #555;
+            color: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .header-btn:hover {
+            background: #555;
+            border-color: #777;
+        }
+
+        /* Main content */
+        .main-content {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+
+        /* Left side - Project badge */
+        .project-badge {
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+        }
+
+        .badge-icon {
+            width: 60px;
+            height: 60px;
+            background: #ff0000;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .badge-title {
+            font-size: 14px;
+            color: #ccc;
+            margin: 0;
+        }
+
+        /* Right side - Search panel */
+        .search-panel {
+            flex: 1;
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            border: 2px solid #333;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px;
+            background: #000;
+            border: 1px solid #555;
+            border-radius: 10px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .search-input::placeholder {
+            color: #666;
+        }
+
+        .scan-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff0000, #cc0000);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .scan-button:hover {
+            background: linear-gradient(135deg, #cc0000, #990000);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        /* Status bars */
+        .status-section {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+        }
+
+        .status-bar {
+            text-align: center;
+            width: 120px;
+        }
+
+        .status-arc {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid #333;
+            margin: 0 auto 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .arc-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            animation: rotate 2s ease-in-out;
+        }
+
+        .risk-score .arc-fill { border-top-color: #ff0000; }
+        .liquidity-safety .arc-fill { border-top-color: #ffaa00; }
+        .team-exposure .arc-fill { border-top-color: #00ff00; }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(270deg); }
+        }
+
+        .status-label {
+            font-size: 12px;
+            color: #ccc;
+            margin: 5px 0;
+        }
+
+        .status-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* Live feed */
+        .live-feed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 10px;
+            font-size: 12px;
+            color: #ff0000;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .feed-text {
+            display: inline-block;
+            animation: scroll 30s linear infinite;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            border: 2px solid #333;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .scan-progress {
+            margin: 30px 0;
+        }
+
+        .progress-step {
+            margin: 15px 0;
+            padding: 10px;
+            background: #000;
+            border-radius: 5px;
+            opacity: 0.3;
+            transition: all 0.5s ease;
+        }
+
+        .progress-step.active {
+            opacity: 1;
+            border-left: 4px solid #ff0000;
+        }
+
+        .progress-step.complete {
+            opacity: 1;
+            border-left: 4px solid #00ff00;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .export-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #333;
+            border: 1px solid #555;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .export-btn:hover {
+            background: #555;
+        }
+
+        /* Report content */
+        .report-content {
+            display: none;
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .risk-summary {
+            background: #1a0000;
+            border: 1px solid #ff0000;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .flagged-functions {
+            background: #1a1a00;
+            border: 1px solid #ffaa00;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .function-item {
+            margin: 5px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="code-rain" id="codeRain"></div>
+  <div class="container">
+   <header class="header">
+    <div></div>
+    <div class="logo">
+     <h1>RugScan.AI</h1>
     </div>
-    <!-- Элемент аудио, который будет воспроизводить звук -->
-    <audio id="audio" src="media/audio.mp3" preload="auto"></audio>
-
-    <div class="bg">
-      <!-- Иконка кости по центру вверху -->
-      <div class="bone-icon">
-        <img src="images/bone.png" alt="Bone Icon">
-      </div>
-      
-      <!-- Иконка Twitter в правом верхнем углу -->
-      <div class="twitter-icon">
-        <a href="https://x.com/HomoBazaar" target="_blank">
-          <img src="images/Twitter_icon_in.png" alt="Twitter Icon">
-        </a>
-      </div>
-      
-      <!-- Горизонтальное меню навигации вверху -->
-      <div class="top-nav">
-        <div class="balance-display">
-          <p class="po">Balance: <span id="balance">0</span> $NE</p>
-        </div>
-        <nav class="nav-menu">
-          <button class="menu-item" data-tab="home"><img src="images/menu/home.png" alt="Cave" width="32" height="32"> Cave</button>
-          <button class="menu-item" data-tab="economy"><img src="images/menu/docs.png" alt="Fair" width="24" height="24"> Fair</button>
-          <button class="menu-item" data-tab="citizens"><img src="images/menu/citizens.png" alt="Homo" width="24" height="24"> Homo</button>
-          <button class="menu-item" data-tab="marketplace"><img src="images/menu/marketplace.png" alt="Bazaar" width="24" height="24"> Bazaar</button>
-          <button class="menu-item" data-tab="create"><img src="images/menu/create.png" alt="Create a homo and goods" width="24" height="24"> Create a homo<br>and goods</button>
-          <button class="menu-item" data-tab="soc"><img src="images/menu/socials.png" alt="Communication" width="24" height="24"> Communication</button>
-        </nav>
-      </div>
-      
-      <div class="container">
-
-        </aside>
-
-        <!-- Content Section -->
-        <main class="content">
-          <!-- Cave Tab -->
-          <div class="tab" id="home">
-
-            <h1>WELCOME TO THE Neanderthal Economy</h1>
-            <p>
-              SYSTEM STATUS:
-              <span class="blinking-text" style="color: #1e7e34">ONLINE</span>
-            </p>
-            <p>
-              Trade like a caveman is an autonomous digital ecosystem powered by $NE.
-              This 8-bit simulation operates with precision and efficiency,
-              where citizens are created, interact, and contribute to the
-              virtual economy.
-            </p>
-            <ul>
-              <ol>
-                <strong class="strong">CREATE HOMO:</strong>
-                Initiate a new 8-bit avatar.
-              </ol>
-              <ol>
-                <strong class="strong">TRADE GOODS:</strong>
-                Exchange digital assets within the bazaar using $NE.
-              </ol>
-              <ol>
-                <strong class="strong">DESIGN ASSETS:</strong>
-                Contribute by creating unique digital utilities and items.
-              </ol>
-            </ul>
-            <p>
-              Every action you take in this environment affects the system’s
-              dynamics. Build, trade, and innovate to enhance the collective.
-            </p>
-          </div>
-
-          <div class="tab" id="doc" style="display: none">
-            <div class="docs"></div>
-          </div>
-
-          <div class="tab" id="soc" style="display: none">
-            <h1>COMMUNICATION</h1>
-            <div class="button-row">
-              <a href="https://x.com/HomoBazaar" target="_blank"><button id="tg" class="menu-item">X</button></a>
-              <a href="https://x.com/HomoBazaar" target="_blank"><button id="capital-btn" class="menu-item">$NE</button></a>
-              <a href="https://x.com/HomoBazaar"_blank"><button id="dex-btn" class="menu-item">Dex</button></a>
-            </div>
-          </div>
-
-          <div class="tab" id="create" style="display: none">
-            <div class="form-container">
-              <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" class="form-input" placeholder="Enter your name">
-              </div>
-              <div class="form-group">
-                <label for="desc">Description</label>
-                <input type="text" id="desc" class="form-input" placeholder="Enter description">
-              </div>
-              <div class="form-group">
-                <label for="additional">Additional Info</label>
-                <input type="text" id="additional" class="form-input" placeholder="Enter additional info">
-              </div>
-              <div class="form-group">
-                <label for="additional">Price</label>
-                <input type="text" id="asdadsdas" class="form-input" placeholder="Enter price">
-              </div>
-              <button id="create-btn" class="create-btn">Create</button>
-              <p id="soon-msg" class="soon-msg">Soon</p>
-            </div>
-          </div>
-
-          <div class="tab" id="economy" style="display: none">
-            <div class="eco">
-              <h3 class="section-title">Abstract</h3>
-              <p>
-                The Trade like a caveman represents a speculative exploration into a
-                virtual, autonomous 8-bit world where creativity, trade, and
-                community coexist. Homo engage through customizable avatars,
-                participate in a vibrant bazaar powered by $NER, and
-                contribute to a dynamic economic and social simulation. The
-                project envisions an evolving ecosystem driven by participant
-                innovation, offering the potential to redefine interaction and
-                value creation in a nostalgic, 8-bitated environment.
-              </p>
-
-              <h3 class="section-title">1. Introduction</h3>
-              <h4>1.1 Vision</h4>
-              <p>
-                The Trade like a caveman is an experimental concept blending the charm
-                of retro 8-bit aesthetics with innovative digital economies. The
-                goal is to create a thriving virtual world that evolves with its
-                homo, encouraging creativity, community, and interaction.
-              </p>
-
-              <h4>1.2 Objectives</h4>
-              <div class="list-container">
-                <ul>
-                  <li>
-                    An immersive and accessible environment for participants to
-                    interact with 8-bit avatars and explore a virtual economy.
-                  </li>
-                  <li>
-                    Opportunities for users to design unique digital assets,
-                    potentially contributing to a growing ecosystem.
-                  </li>
-                  <li>
-                    A simulation where trade, innovation, and creativity align
-                    with an interactive and decentralized ethos.
-                  </li>
-                </ul>
-              </div>
-
-              <h4>1.3 Conceptual Inspiration</h4>
-              <p>
-                This initiative draws from the timeless appeal of 8-bit visuals
-                and incorporates ideas from modern economic and community-driven
-                systems. By empowering users to create and trade, the Trade like a caveman proposes a model for fostering an engaging,
-                community-centric digital society.
-              </p>
-
-              <h3 class="section-title">2. Core Concepts</h3>
-              <h4>2.1 The Trade like a caveman Simulation</h4>
-              <div class="highlight">
-                <p>
-                  <strong>A Living Ecosystem:</strong> The VILLAGE serves as a
-                  simulated, self-sustaining virtual environment where citizens
-                  participate in everyday activities, trade, and creative
-                  expression.
-                </p>
-                <p>
-                  <strong>Customizable Avatars:</strong> Participants craft
-                  unique 8-bitated characters that inhaVILLAGE the virtual world,
-                  shaping their presence within the community.
-                </p>
-              </div>
-
-              <h4>2.2 The $NE Economy</h4>
-              <p>
-                <strong>Currency Overview:</strong> $NE serves as the core unit
-                of exchange in the Trade like a caveman, enabling citizens to trade,
-                purchase, and innovate within the simulation.
-              </p>
-              <p>
-                <strong>Goods and Resources:</strong> Citizens can access
-                virtual items, ranging from Gold $NE (representing significant
-                value, such as 1,000 $NE per plate) to everyday utilities and
-                custom user-generated assets.
-              </p>
-
-              <h4>2.3 User-Generated Assets</h4>
-              <div class="highlight">
-                <p>
-                  <strong>Design Your Creations:</strong> Participants have the
-                  opportunity to conceptualize and introduce new digital goods,
-                  utilities, or services that enhance the simulation experience.
-                </p>
-                <p>
-                  <strong>A Homo for Trade:</strong> An open trading
-                  system allows homo to exchange goods, fostering a dynamic
-                  and interactive economy.
-                </p>
-              </div>
-
-              <h4>2.4 Governance</h4>
-              <p>
-                The project encourages collaborative decision-making, where
-                participants can propose and vote on potential changes or
-                additions to the virtual world. Governance models could explore
-                proportional influence based on $NE holdings or active
-                participation metrics.
-              </p>
-
-              <h3 class="section-title">3. Key Features</h3>
-              <h4>3.1 Homo Creation</h4>
-              <p>
-                <strong>Custom Avatars:</strong> Homo personalize their
-                8-bitated characters, showcasing creativity and individual
-                identity.
-              </p>
-              <p>
-                <strong>A Social Identity:</strong> Avatars interact in a shared
-                environment, enabling friendships, collaborations, and cultural
-                exchanges.
-              </p>
-
-              <h4>3.2 Economic Framework</h4>
-              <div class="highlight">
-                <p>
-                  <strong>The Role of $NE:</strong> $NE facilitates trade and
-                  commerce, encouraging participants to engage in meaningful
-                  economic interactions.
-                </p>
-                <p>
-                  <strong>Earning $NE:</strong> Through crafting, trading, or
-                  participating in VILLAGE activities.
-                </p>
-                <p>
-                  <strong>Spending $SURVIVR:</strong> On virtual goods, real estate,
-                  or user-created utilities.
-                </p>
-                <p>
-                  <strong>Gold $NE and Silver $NE:</strong> These higher-value
-                  denominations allow for savings-like functionality or the
-                  accumulation of wealth.
-                </p>
-              </div>
-
-              <h4>3.3 Asset Creation and Trade</h4>
-              <p>
-                <strong>Creative Freedom:</strong> Homo are invited to
-                imagine and implement virtual goods or tools, ranging from
-                decorative items to functional utilities like farming tools or
-                virtual entertainment.
-              </p>
-              <p>
-                <strong>A Thriving Bazaar:</strong> Participants can trade
-                their creations, fostering a diverse and evolving economic
-                landscape.
-              </p>
-
-              <h4>3.4 Community and Culture</h4>
-              <p>
-                The simulation could host collaborative events, cultural
-                exchanges, and communal projects, building a sense of belonging
-                and shared purpose.
-              </p>
-
-              <h3 class="section-title">4. Technical Architecture</h3>
-              <h4>4.1 Platform Foundations</h4>
-              <p>
-                Designed as an accessible simulation compatible across devices,
-                with potential scalability to accommodate more participants and
-                features over time.
-              </p>
-
-              <h4>4.2 Security Measures</h4>
-              <p>
-                Data integrity and asset ownership are protected through
-                encryption and token-like verification mechanisms.
-              </p>
-
-              <h4>4.3 Flexible Scalability</h4>
-              <p>
-                The platform may adapt to growing user bases, evolving demands,
-                or new technologies as the community and simulation expand
-                organically.
-              </p>
-
-              <h3 class="section-title">5. Economic Model</h3>
-              <h4>5.1 Earning $NE</h4>
-              <p>
-                Various activities within the VILLAGE, including crafting,
-                trading, or participating in VILLAGE-wide initiatives, offer
-                opportunities to earn $NE Creative and innovative
-                contributions, such as in-demand digital goods, may yield higher
-                economic rewards.
-              </p>
-
-              <h4>5.2 Spending $NE</h4>
-              <p>
-                Homo can allocate their $NE toward acquiring goods,
-                services, or virtual real estate. High-value items, like Gold
-                $NE plates, could function as stores of value within the
-                economic system.
-              </p>
-
-              <h4>5.3 Dynamic Bazaar</h4>
-              <p>
-                Supply and demand dynamics govern pricing, promoting a
-                self-regulating market system.
-              </p>
-
-              <h3 class="section-title">6. Governance Framework</h3>
-              <h4>6.1 Homo Participation</h4>
-              <p>
-                Decisions regarding potential features or economic adjustments
-                could be influenced by community discussions or voting
-                mechanisms.
-              </p>
-
-              <h4>6.2 Encouraging Innovation</h4>
-              <p>
-                Governance may prioritize proposals that enhance creativity,
-                sustainability, or inclusivity within the simulation.
-              </p>
-
-              <h3 class="section-title">7. Conceptual Growth</h3>
-              <h4>Exploration of Features</h4>
-              <p>
-                The Trade like a caveman continues to evolve, encouraging innovation,
-                interaction, and creativity among its growing population. Future
-                enhancements could include new gameplay mechanics, social
-                interactions, and advanced digital economies.
-              </p>
-            </div>
-          </div>
-
-          <!-- Bazaar Tab -->
-          <div class="tab" id="marketplace" style="display: none">
-            <h1>Bazaar</h1>
-            <div id="marketplace-container" class="cards-container"></div>
-            <div class="cards" id="marketplace-cards"></div>
-          </div>
-
-          <!-- Homo Tab -->
-          <div class="tab" id="citizens" style="display: none">
-            <h1>Homo</h1>
-            <div id="citizens-list" class="cards-container scrollable-container"></div>
-          </div>
-          
-          <!-- Modal for homo/item details -->
-          <!-- Модальное окно перемещено ниже для избежания дублирования -->
-          
-          <div class="generate">
-            <div id="profile-status">
-              you homo: <span style="color: red">not revived</span>
-            </div>
-            <button id="connect-button">Revive</button>
-            <div class="avatar"></div>
-            <div class="buttons1">
-              <button id="generate-button">Generate Homo</button>
-              <input type="file" id="avatar-upload" accept="image/*" style="display: none;">
-              <button id="add-button">Add</button>
-            </div>
-          </div>
-        </main>
-      </div>
-
-      <!-- Success Modal -->
-      <div id="success-modal" style="display: none">
-        <div class="modal-content">
-          <span id="close-success-modal" class="close">&times;</span>
-          <h2 style="margin: 10px 0;">Success!</h2>
-          <p id="success-message">Operation completed successfully!</p>
-          <button id="close-success-btn" class="modal-btn">Close</button>
-        </div>
-      </div>
-
-      <div id="modal" style="display: none">
-        <div class="modal-content">
-          <span class="close" id="modal-close">&times;</span>
-          <div class="modal-header">
-            <h2 id="modal-text">Modal Title</h2>
-          </div>
-          <div class="modal-body">
-            <div class="modal-image-container">
-              <img id="modal-image" src="images/BIT.png" alt="Item" width="100" height="100">
-            </div>
-            <div class="modal-info">
-              <p id="modal-description" style="color: #000000; text-shadow: none; font-weight: bold;">Description of the item.</p>
-              <p id="modal-price" class="price-tag" style="color: #000000; text-shadow: none;">Price: $NE 0</p>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button id="buy-btn" class="modal-btn">Buy</button>
-            <button id="sell-btn" class="modal-btn" style="display: none">Sell</button>
-            <button id="close-modal" class="modal-btn">Close</button>
-          </div>
-        </div>
-      </div>
-
-      <script src="js/index.js"></script>
+    <div class="header-buttons"><button class="header-btn">✕</button> <button class="header-btn">Pump.fun</button>
     </div>
-    
-    <!-- Контейнер для мини-мобов -->
-    <div id="mobs-container"></div>
+   </header>
+   <div class="main-content">
+    <div class="project-badge">
+     <div class="badge-icon">
+      🛡️
+     </div>
+     <h3 class="badge-title">Security Scanner</h3>
+    </div>
+    <div class="search-panel"><input type="text" class="search-input" placeholder="Token Contract Address / Token Name" id="tokenInput"> <button class="scan-button" id="scanButton">Run Scan</button>
+    </div>
+   </div>
+   <div class="status-section">
+    <div class="status-bar risk-score">
+     <div class="status-arc">
+      <div class="arc-fill"></div>
+     </div>
+     <div class="status-label">
+      Risk Score
+     </div>
+     <div class="status-value">
+      --
+     </div>
+    </div>
+    <div class="status-bar liquidity-safety">
+     <div class="status-arc">
+      <div class="arc-fill"></div>
+     </div>
+     <div class="status-label">
+      Liquidity Safety
+     </div>
+     <div class="status-value">
+      --
+     </div>
+    </div>
+    <div class="status-bar team-exposure">
+     <div class="status-arc">
+      <div class="arc-fill"></div>
+     </div>
+     <div class="status-label">
+      Team Exposure
+     </div>
+     <div class="status-value">
+      --
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="live-feed">
+   <div class="feed-text">
+    🚨 SCAM DETECTED: 0x7a3f...8b2c (HoneyPot) • 🚨 RUG PULL: MoonCoin (Liquidity Drained) • ⚠️ HIGH RISK: SafeToken (Suspicious Functions) • 🚨 SCAM DETECTED: 0x9d4e...1f7a (Fake Airdrop) •
+   </div>
+  </div><!-- Scan Modal -->
+  <div class="modal" id="scanModal">
+   <div class="modal-content"><button class="close-modal" id="closeModal">×</button>
+    <h2>AI Security Scan in Progress</h2>
+    <div class="scan-progress" id="scanProgress">
+     <div class="progress-step" id="step1">
+      🔍 Analyzing contract bytecode...
+     </div>
+     <div class="progress-step" id="step2">
+      🧠 Running AI pattern detection...
+     </div>
+     <div class="progress-step" id="step3">
+      📊 Checking liquidity pools...
+     </div>
+     <div class="progress-step" id="step4">
+      👥 Analyzing team wallets...
+     </div>
+     <div class="progress-step" id="step5">
+      ⚡ Generating risk assessment...
+     </div>
+    </div>
+    <div class="report-content" id="reportContent">
+     <h3>Scan Complete</h3>
+     <div class="risk-summary">
+      <h4>🚨 Risk Summary</h4>
+      <p><strong>Overall Risk:</strong> HIGH (8.2/10)</p>
+      <p><strong>Primary Concerns:</strong> Honeypot patterns detected, Ownership not renounced</p>
+      <p><strong>Recommendation:</strong> DO NOT INVEST - High probability of rug pull</p>
+     </div>
+     <div class="flagged-functions">
+      <h4>⚠️ Flagged Functions</h4>
+      <div class="function-item">
+       • setMaxTxAmount() - Can limit sells
+      </div>
+      <div class="function-item">
+       • excludeFromFee() - Suspicious fee exemptions
+      </div>
+      <div class="function-item">
+       • _transfer() - Modified transfer logic
+      </div>
+      <div class="function-item">
+       • swapAndLiquify() - Potential honeypot mechanism
+      </div>
+     </div><button class="export-btn" id="exportBtn">Export Report (CSV)</button>
+    </div>
+   </div>
+  </div>
+  <script>
+        // Create animated code rain
+        function createCodeRain() {
+            const codeRain = document.getElementById('codeRain');
+            const characters = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            
+            for (let i = 0; i < 50; i++) {
+                const line = document.createElement('div');
+                line.className = 'rain-line';
+                line.style.left = Math.random() * 100 + '%';
+                line.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                line.style.animationDelay = Math.random() * 2 + 's';
+                
+                let text = '';
+                for (let j = 0; j < 20; j++) {
+                    text += characters[Math.floor(Math.random() * characters.length)];
+                }
+                line.textContent = text;
+                
+                codeRain.appendChild(line);
+            }
+        }
 
-    <!-- JavaScript для анимации мини-мобов -->
-    <script src="js/mobs.js"></script>
-  
+        // Scan simulation
+        function runScan() {
+            const modal = document.getElementById('scanModal');
+            const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
+            const reportContent = document.getElementById('reportContent');
+            const statusValues = document.querySelectorAll('.status-value');
+            
+            modal.style.display = 'flex';
+            reportContent.style.display = 'none';
+            
+            // Reset steps
+            steps.forEach(stepId => {
+                const step = document.getElementById(stepId);
+                step.classList.remove('active', 'complete');
+            });
+            
+            // Animate steps
+            let currentStep = 0;
+            const stepInterval = setInterval(() => {
+                if (currentStep > 0) {
+                    document.getElementById(steps[currentStep - 1]).classList.remove('active');
+                    document.getElementById(steps[currentStep - 1]).classList.add('complete');
+                }
+                
+                if (currentStep < steps.length) {
+                    document.getElementById(steps[currentStep]).classList.add('active');
+                    currentStep++;
+                } else {
+                    clearInterval(stepInterval);
+                    
+                    // Show final report
+                    setTimeout(() => {
+                        document.getElementById(steps[steps.length - 1]).classList.remove('active');
+                        document.getElementById(steps[steps.length - 1]).classList.add('complete');
+                        reportContent.style.display = 'block';
+                        
+                        // Update status values
+                        statusValues[0].textContent = '8.2';
+                        statusValues[1].textContent = '2.1';
+                        statusValues[2].textContent = '7.8';
+                    }, 500);
+                }
+            }, 1000);
+        }
 
-</body></html>
-</body></html>
+        // Export simulation
+        function exportReport() {
+            // Create a temporary link element
+            const link = document.createElement('a');
+            link.href = 'data:text/csv;charset=utf-8,Token,Risk Score,Liquidity Safety,Team Exposure,Status\nSample Token,8.2,2.1,7.8,HIGH RISK';
+            link.download = 'rugscan_report.csv';
+            
+            // Trigger download
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Event listeners
+        document.getElementById('scanButton').addEventListener('click', runScan);
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('scanModal').style.display = 'none';
+        });
+        document.getElementById('exportBtn').addEventListener('click', exportReport);
+
+        // Initialize
+        createCodeRain();
+
+        // Update status bars periodically
+        setInterval(() => {
+            const arcs = document.querySelectorAll('.arc-fill');
+            arcs.forEach(arc => {
+                arc.style.animation = 'none';
+                setTimeout(() => {
+                    arc.style.animation = 'rotate 2s ease-in-out';
+                }, 10);
+            });
+        }, 5000);
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9929c8674178414b',t:'MTc2MTE0NDM3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
